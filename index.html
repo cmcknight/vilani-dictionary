@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vilani Dictionary</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100vw;
+      height: 90vh;
+      padding-bottom: 2rem;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+      font-family: sans-serif;
+    }
+
+    .content-container {
+      margin-top: 1rem;
+      max-width: 30rem;
+      width: 100%;
+      height: 100%;
+    }
+
+    button {
+      background: #ffe082;
+      font-size: 1rem;
+      padding: .25rem .5rem;
+      border-top-right-radius: .5rem;
+      border-bottom-right-radius: .5rem;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    input {
+      font-size: 1rem;
+      padding: .25rem .5rem;
+      width: 100%;
+      border-radius: .5rem;
+      outline-color: none;
+    }
+
+    #display {
+      margin-top: 2rem;
+      padding: 1rem;
+      height: 50%;
+      overflow-y: auto;
+    }
+
+    table {
+      margin: 2rem auto;
+      width: 20rem;
+      border-collapse: collapse;
+    }
+
+    td,
+    th {
+      border: 1px solid black;
+      padding-left: .5rem;
+      padding-right: .5rem;
+    }
+
+    .form {
+      width: 100%;
+      position: relative;
+    }
+
+    form {
+      width: 100%;
+    }
+
+    .disclaimer {
+      justify-self: flex-end;
+      max-width: 40rem;
+      padding: 2rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Vilani Dictionary</h1>
+  <div class="container">
+    <div class="content-container">
+      <div class="form">
+        <form>
+          <div class="search">
+            <input type="text" id="search-text">
+            <button id="search-btn">Search</button>
+          </div>
+        </form>
+      </div>
+      <div id="display">
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <div class="disclaimer-content">
+        The Traveller game in all forms is owned by Far Future Enterprises. Copyright 1977 - 2008 Far Future
+        Enterprises. Traveller is a registered trademark of Far Future Enterprises. Far Future permits web sites and
+        fanzines for this game, provided it contains this notice, that Far Future is notified, and subject to a
+        withdrawal of permission on 90 days notice. The contents of this site are for personal, non-commercial use only.
+        Any use of Far Future Enterprises's copyrighted material or trademarks anywhere on this web site and its files
+        should not be viewed as a challenge to those copyrights or trademarks. In addition, any program/articles/file on
+        this site cannot be republished or distributed without the consent of the author who contributed it.
+      </div>
+    </div>
+  </div>
+
+  <!-- Load the dictionary data function -->
+  <script src="./js/minisearch/umd/index.min.js"></script>
+  <script src="./data/data.js"></script>
+  <script>
+    let searchTxt = document.getElementById('search-text');
+    let searchBtn = document.getElementById('search-btn');
+    let resultsDisplay = document.getElementById('display');
+    let miniSearch;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      miniSearch = new MiniSearch({
+        fields: ['word', 'meaning'], // fields to index for full-text search
+        storeFields: ['word', 'meaning'] // fields to return with search results
+      });
+
+      miniSearch.addAll(words);
+    })
+
+    searchBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // search the index
+      let results = miniSearch.search(searchTxt.value, {
+        prefix: true
+      });
+      console.log(results)
+
+      if (results.length === 0) {
+        resultsDisplay.innerHTML = `<h2>Sorry, no matches were found for <em>${searchTxt.value}</em></h2>`;
+      } else {
+        let text = `
+        <h2>Results</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Word</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+        `;
+
+        results.forEach(res => {
+          text += `
+            <tr>
+              <td>${res.word}</td>
+              <td>${res.meaning}</td>
+            </tr>
+          `
+        });
+
+        text += `
+          </tbody>
+        </table>`
+
+        resultsDisplay.innerHTML = text;
+
+        searchTxt.value = '';
+      }
+    })
+  </script>
+</body>
+
+</html>
