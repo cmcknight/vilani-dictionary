@@ -1,6 +1,6 @@
 # Vilani Dictionary
 
-This project demonstrates the creation of a full-text searchable dictionary for the Vilani language.
+This project demonstrates the creation of a full-text searchable dictionary for the Vilani language. The project uses the [minisearch](https://github.com/lucaong/minisearch) library (stored in the *js* directory) to provide the full-text search feature.
 
 ## Usage
 
